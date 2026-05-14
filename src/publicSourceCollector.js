@@ -701,6 +701,7 @@ function nextAction(item, fit, relevance, product, risks) {
 
 function shootingSuggestion(item, source, fit, product) {
   const subject = titleTopic(item, source);
+  const pick = (items) => items[titleStyleIndex(item, source) % items.length];
   if (fit.goal === "转化") {
     if (product.channel === "私信") return `用“痛点场景-流程演示-私信领取/咨询”的结构拍，结尾承接想提升口播产能的人。`;
     if (product.channel === "直播") return `用一个真实内容生产案例开场，直播里展开演示 AI口播智能体的完整流程。`;
@@ -708,9 +709,27 @@ function shootingSuggestion(item, source, fit, product) {
     return `先讲${subject}里的提效逻辑，再用案例过渡到内容产能系统。`;
   }
   if (fit.goal === "信任") {
-    return `用“误区-判断-方法论”的三段式拍，重点讲你怎么看，而不是急着卖工具。`;
+    if (fit.accountFit === "AI先锋者") {
+      return pick([
+        `从${subject}切入，先给趋势判断，再讲普通人应该调整哪一个行动习惯。`,
+        `拍成观点口播，重点讲这件事背后的机会边界和你自己的取舍。`,
+        `用“现象-变化-普通人应对”的节奏讲，结尾留一个可讨论的判断。`,
+        `把它当成一次行业观察，不讲工具教程，讲它会怎样改变个人工作方式。`
+      ]);
+    }
+    return pick([
+      `先讲一个真实内容生产卡点，再拆它如何变成更稳定的选题、脚本和复盘流程。`,
+      `用一个小案例证明内容产能为什么需要系统化，结尾自然引到后续教程或私信。`,
+      `拍成案例拆解，不急着卖产品，先让用户相信你真的懂内容流程。`,
+      `从创作者每天卡住的一步切入，讲清楚工具变化如何落到账号运营结果。`
+    ]);
   }
-  return `用反常识开头，快速讲清它能帮自媒体人省哪一步、提升哪一个指标。`;
+  return pick([
+    `用反常识开头，快速讲清它能帮自媒体人省哪一步、提升哪一个指标。`,
+    `先抛出一个具体场景，再用 20 秒讲清这个变化为什么值得普通人关注。`,
+    `用强标题抓流量，正文只讲一个可落地动作，避免展开成泛泛资讯。`,
+    `把热点改成用户痛点表达，重点讲它对选题、停留或发布效率的直接影响。`
+  ]);
 }
 
 function buildAngle(item, source, fit, relevance) {
@@ -992,7 +1011,7 @@ function xianfengPackageItem(kind, row) {
       cta: "想看我怎么把一个热点拆成标题、钩子和口播稿，可以评论或私信“口播”。"
     },
     trust: {
-      title: `${topic}真正能证明一件事：内容能力正在变成系统能力`,
+      title: `${topic}：内容能力正在变成系统能力`,
       hook: `很多人以为做内容靠灵感，真正稳定的账号靠的是选题、脚本、口播和复盘流程。`,
       form: "露脸口播 + 案例拆解",
       product: "间接",
@@ -1027,7 +1046,7 @@ function xianfengzhePackageItem(kind, row) {
   const topic = rowTopic(row);
   const templates = {
     trafficCognition: {
-      title: `${topic}不是热点，它是在提醒普通人重新理解AI机会`,
+      title: `${topic}，真正提醒普通人的是：AI机会不在工具本身`,
       hook: `普通人入局AI，最危险的不是不会工具，而是把每一次变化都当成热闹看。`,
       point: `AI的机会不在“又出了什么工具”，而在谁能把工具变化翻译成自己的生产力和判断力。`,
       why: "它能输出认知判断，不急着卖产品，适合建立 AI先锋者 的观点辨识度。",
@@ -1110,6 +1129,16 @@ function uniqueBriefRows(rows) {
   });
 }
 
+function uniqueFailureRows(rows) {
+  const seen = new Set();
+  return rows.filter((row) => {
+    const key = normalize(row["来源链接"] || `${row["来源名称"]}-${row["失败原因"]}`).toLowerCase();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function resolvedBriefAccount(row) {
   const fit = briefFit(row);
   if (fit === "AI先锋" || fit === "AI先锋者") return fit;
@@ -1133,11 +1162,53 @@ function resolvedBriefGoal(row) {
   return resolvedBriefAccount(row) === "AI先锋者" ? "信任" : "流量";
 }
 
+function sourceSummaryPurpose(row, account) {
+  const text = `${rawTitle(row)} ${briefTitle(row)} ${briefHook(row)} ${row["摘要"] || ""}`.toLowerCase();
+  if (account === "AI先锋") {
+    if (/直接|转化|私信|直播|799/.test(`${briefProduct(row)} ${briefGoal(row)} ${row["承接方式"] || ""}`)) return "转化";
+    if (/youtube|instagram|短视频|attention|traffic|流量/.test(text)) return "流量/信任";
+    return "信任";
+  }
+  if (/人设|个人|复盘|实战/.test(text)) return "长期信任/人设";
+  if (/趋势|机会|认知|判断|智能体|agent|codex|claude|gemini|model|模型/.test(text)) return "流量型认知";
+  return "长期信任/方法论";
+}
+
+function sourceVersionAngle(row, account) {
+  const topic = rowTopic(row);
+  const text = `${rawTitle(row)} ${briefTitle(row)} ${briefHook(row)} ${row["摘要"] || ""}`.toLowerCase();
+  if (account === "AI先锋") {
+    if (/youtube|instagram|短视频|attention|traffic/.test(text)) {
+      return `改写成内容增长案例：围绕「${topic}」解释如何提高标题、开头和口播产能，并保留私信/教程承接口。`;
+    }
+    if (/口播|脚本|内容|creator|workflow|工具|tool|agent|智能体/.test(text)) {
+      return `改写成工具落地案例：围绕「${topic}」讲一个人如何接进选题、脚本、口播和复盘流程。`;
+    }
+    return `改写成变现号角度：从用户卡点切入，落到内容生产提效、私信咨询或直播承接。`;
+  }
+  if (/codex|claude|gemini|agent|智能体|workflow|模型|model/.test(text)) {
+    return `改写成认知判断：用「${topic}」说明普通人要从追工具转向重构自己的工作方式。`;
+  }
+  if (/creator|content|video|短视频|instagram|youtube/.test(text)) {
+    return `改写成长期方法论：用「${topic}」讨论创作者为什么要从灵感驱动转向系统驱动。`;
+  }
+  return `改写成IP观点：围绕「${topic}」输出趋势洞察、机会边界和个人实战判断。`;
+}
+
 function sourceSummaryLine(row) {
   const source = row["来源"] || row["热点来源"] || row["来源/入口"] || "公开来源";
   const title = rawTitle(row);
   const level = row["相关等级"] || "待判断";
-  return `- ${source}｜${title}｜相关等级：${level}｜建议账号：${resolvedBriefAccount(row)}｜内容目的：${resolvedBriefGoal(row)}｜下一步：${row["下一步动作"] || "放入观察"}`;
+  const nextActionText = row["下一步动作"] || "放入观察";
+  const lineForAccount = (account) =>
+    `- ${source}｜${title}｜相关等级：${level}｜${account}版本角度：${sourceVersionAngle(row, account)}｜内容目的：${sourceSummaryPurpose(row, account)}｜下一步：${nextActionText}`;
+
+  if (briefFit(row) === "两个都适合") {
+    return [lineForAccount("AI先锋"), lineForAccount("AI先锋者")].join("\n");
+  }
+
+  const account = resolvedBriefAccount(row);
+  return lineForAccount(account);
 }
 
 function packageItemByLabel(items, label) {
@@ -1222,7 +1293,8 @@ function buildDailyBrief(dateText, aiRows, hotRows, failures, fileWriteWarnings 
   const accountPackages = buildAccountPackages(combinedRows);
   const shootingDecisions = buildShootingDecisions(accountPackages);
   const sourceSummaryRows = uniqueBriefRows(combinedRows);
-  const riskyRows = [...aiRows, ...hotRows].filter((row) => row["下一步动作"] === "不做" || Boolean(row["不建议做的原因"]));
+  const riskyRows = uniqueBriefRows([...aiRows, ...hotRows].filter((row) => row["下一步动作"] === "不做" || Boolean(row["不建议做的原因"])));
+  const failureRows = uniqueFailureRows(failures);
 
   return `# 每日AI简报 ${dateText}
 
@@ -1248,7 +1320,7 @@ ${listLines(riskyRows, riskyLine)}
 
 ## 六、今日读取失败的信息源
 
-${listLines(failures, (item) => `- ${item["来源名称"]}：${item["失败原因"]}（${item["来源链接"]}）`)}
+${listLines(failureRows, (item) => `- ${item["来源名称"]}：${item["失败原因"]}（${item["来源链接"]}）`)}
 
 ## 七、明天建议观察什么
 

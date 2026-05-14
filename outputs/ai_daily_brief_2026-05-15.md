@@ -14,13 +14,13 @@
 
 ### 信任内容
 
-- 标题：把AI工具变成本地工作流真正能证明一件事：内容能力正在变成系统能力
+- 标题：AI智能体不是新工具，而是普通人工作方式的一次换挡：内容能力正在变成系统能力
 - 前3秒：很多人以为做内容靠灵感，真正稳定的账号靠的是选题、脚本、口播和复盘流程。
 - 拍摄形式：露脸口播 + 案例拆解
 - 是否承接799产品：间接
 - 私信/直播/教程/案例承接方式：案例拆解
 - 结尾CTA：如果你也想搭自己的内容产能流程，先从一条口播稿的标准化开始。
-- 来源线索：Building a safe, effective sandbox to enable Codex on Windows
+- 来源线索：Work with Codex from anywhere
 
 ### 转化内容
 
@@ -30,13 +30,13 @@
 - 是否承接799产品：直接
 - 私信/直播/教程/案例承接方式：私信 / 直播 / 教程演示
 - 结尾CTA：想要一套从选题到口播稿的流程，可以私信我看 799 元 AI口播智能体。
-- 来源线索：New Instagram Tools to Drive Traffic, Optimize Your Content, and Establish Branding
+- 来源线索：Building a safe, effective sandbox to enable Codex on Windows
 
 ## 二、AI先锋者 今日IP内容包
 
 ### 流量型认知内容
 
-- 标题：把AI工具变成本地工作流不是热点，它是在提醒普通人重新理解AI机会
+- 标题：AI智能体不是新工具，而是普通人工作方式的一次换挡，真正提醒普通人的是：AI机会不在工具本身
 - 前3秒：普通人入局AI，最危险的不是不会工具，而是把每一次变化都当成热闹看。
 - 核心观点：AI的机会不在“又出了什么工具”，而在谁能把工具变化翻译成自己的生产力和判断力。
 - 为什么适合AI先锋者：它能输出认知判断，不急着卖产品，适合建立 AI先锋者 的观点辨识度。
@@ -44,7 +44,7 @@
 - 拍摄形式：露脸观点口播
 - 是否需要提产品：默认不强提产品
 - 这条内容在长期IP建设里的作用：用于建立“我能看懂AI变化背后的真实机会”的长期认知标签。
-- 来源线索：Building a safe, effective sandbox to enable Codex on Windows
+- 来源线索：Work with Codex from anywhere
 
 ### 信任型方法论内容
 
@@ -56,7 +56,7 @@
 - 拍摄形式：露脸口播 + 白板/大纲
 - 是否需要提产品：不强提产品，可自然提“我自己的实战系统”
 - 这条内容在长期IP建设里的作用：用于沉淀“懂方法、懂运营、懂长期复利”的IP信任。
-- 来源线索：YouTube Tools That Scale Attention
+- 来源线索：Building a safe, effective sandbox to enable Codex on Windows
 
 ### 长期人设内容
 
@@ -68,7 +68,7 @@
 - 拍摄形式：露脸口播 / 日更复盘
 - 是否需要提产品：不提产品
 - 这条内容在长期IP建设里的作用：用于建立长期人设资产，为未来高客单咨询、陪跑、课程和合作铺垫。
-- 来源线索：Gemini App
+- 来源线索：What Parameter Golf taught us about AI-assisted research
 
 ## 三、今天最建议拍的4条
 
@@ -100,7 +100,7 @@
 
 ### 3. AI先锋者｜流量型认知优先
 
-- 标题：把AI工具变成本地工作流不是热点，它是在提醒普通人重新理解AI机会
+- 标题：AI智能体不是新工具，而是普通人工作方式的一次换挡，真正提醒普通人的是：AI机会不在工具本身
 - 前3秒：普通人入局AI，最危险的不是不会工具，而是把每一次变化都当成热闹看。
 - 账号：AI先锋者
 - 内容目的：流量型认知优先
@@ -126,12 +126,19 @@
 
 ## 四、今日信息源摘要
 
-- OpenAI News｜Building a safe, effective sandbox to enable Codex on Windows｜相关等级：中相关｜建议账号：AI先锋者｜内容目的：信任｜下一步：放入观察
-- Google AI Blog｜Gemini App｜相关等级：中相关｜建议账号：AI先锋者｜内容目的：信任｜下一步：放入观察
-- Google AI Blog｜Find out what’s new in the Gemini app in April's Gemini Drop.｜相关等级：中相关｜建议账号：AI先锋者｜内容目的：信任｜下一步：放入观察
-- Social Media Examiner｜YouTube Tools That Scale Attention｜相关等级：强相关｜建议账号：AI先锋｜内容目的：信任｜下一步：拍短视频
-- Social Media Examiner｜Claude Code for Everyone: How to Get Started｜相关等级：强相关｜建议账号：AI先锋者｜内容目的：信任｜下一步：拍短视频
-- Social Media Examiner｜New Instagram Tools to Drive Traffic, Optimize Your Content, and Establish Branding｜相关等级：中相关｜建议账号：AI先锋｜内容目的：信任｜下一步：放入观察
+- OpenAI News｜Work with Codex from anywhere｜相关等级：中相关｜AI先锋者版本角度：改写成认知判断：用「AI智能体不是新工具，而是普通人工作方式的一次换挡」说明普通人要从追工具转向重构自己的工作方式。｜内容目的：流量型认知｜下一步：放入观察
+- OpenAI News｜Building a safe, effective sandbox to enable Codex on Windows｜相关等级：中相关｜AI先锋版本角度：改写成工具落地案例：围绕「把AI工具变成本地工作流」讲一个人如何接进选题、脚本、口播和复盘流程。｜内容目的：信任｜下一步：放入观察
+- OpenAI News｜Building a safe, effective sandbox to enable Codex on Windows｜相关等级：中相关｜AI先锋者版本角度：改写成认知判断：用「把AI工具变成本地工作流」说明普通人要从追工具转向重构自己的工作方式。｜内容目的：长期信任/人设｜下一步：放入观察
+- Google AI Blog｜Gemini App｜相关等级：中相关｜AI先锋版本角度：改写成变现号角度：从用户卡点切入，落到内容生产提效、私信咨询或直播承接。｜内容目的：转化｜下一步：放入观察
+- Google AI Blog｜Gemini App｜相关等级：中相关｜AI先锋者版本角度：改写成认知判断：用「AI工具从聊天走向生产」说明普通人要从追工具转向重构自己的工作方式。｜内容目的：流量型认知｜下一步：放入观察
+- Google AI Blog｜Find out what’s new in the Gemini app in April's Gemini Drop.｜相关等级：中相关｜AI先锋版本角度：改写成工具落地案例：围绕「AI工具从聊天走向生产」讲一个人如何接进选题、脚本、口播和复盘流程。｜内容目的：转化｜下一步：放入观察
+- Google AI Blog｜Find out what’s new in the Gemini app in April's Gemini Drop.｜相关等级：中相关｜AI先锋者版本角度：改写成认知判断：用「AI工具从聊天走向生产」说明普通人要从追工具转向重构自己的工作方式。｜内容目的：流量型认知｜下一步：放入观察
+- Social Media Examiner｜YouTube Tools That Scale Attention｜相关等级：强相关｜AI先锋版本角度：改写成内容增长案例：围绕「内容生产正在系统化」解释如何提高标题、开头和口播产能，并保留私信/教程承接口。｜内容目的：转化｜下一步：拍短视频
+- Social Media Examiner｜YouTube Tools That Scale Attention｜相关等级：强相关｜AI先锋者版本角度：改写成长期方法论：用「内容生产正在系统化」讨论创作者为什么要从灵感驱动转向系统驱动。｜内容目的：长期信任/方法论｜下一步：拍短视频
+- Social Media Examiner｜Claude Code for Everyone: How to Get Started｜相关等级：强相关｜AI先锋版本角度：改写成变现号角度：从用户卡点切入，落到内容生产提效、私信咨询或直播承接。｜内容目的：信任｜下一步：拍短视频
+- Social Media Examiner｜Claude Code for Everyone: How to Get Started｜相关等级：强相关｜AI先锋者版本角度：改写成认知判断：用「普通人开始调度AI工作流」说明普通人要从追工具转向重构自己的工作方式。｜内容目的：流量型认知｜下一步：拍短视频
+- Social Media Examiner｜New Instagram Tools to Drive Traffic, Optimize Your Content, and Establish Branding｜相关等级：中相关｜AI先锋版本角度：改写成内容增长案例：围绕「内容生产正在系统化」解释如何提高标题、开头和口播产能，并保留私信/教程承接口。｜内容目的：转化｜下一步：放入观察
+- Social Media Examiner｜New Instagram Tools to Drive Traffic, Optimize Your Content, and Establish Branding｜相关等级：中相关｜AI先锋者版本角度：改写成长期方法论：用「内容生产正在系统化」讨论创作者为什么要从灵感驱动转向系统驱动。｜内容目的：长期信任/方法论｜下一步：放入观察
 
 ## 五、今日不建议做的内容
 
