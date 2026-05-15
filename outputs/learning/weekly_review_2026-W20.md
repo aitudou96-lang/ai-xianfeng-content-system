@@ -11,7 +11,6 @@
 
 ## 三、本周质量最高的信息源
 
-- Google AI Blog：本周有效 1 天；是；是，入主表 2 条，过滤弱相关 4 条；https://blog.google/technology/ai/
 - OpenAI News：本周有效 1 天；是；是，入主表 2 条，过滤弱相关 4 条；https://openai.com/news/rss.xml
 - Social Media Examiner：本周有效 1 天；是；是，入主表 3 条，过滤弱相关 3 条；https://www.socialmediaexaminer.com/feed/
 
@@ -39,7 +38,7 @@
 
 ## 八、AI先锋者 本周更适合长期信任的方向
 
-- 长期人设内容：我越来越确定：普通人做AI，不能只学工具，要练判断（来源线索：Gemini App）
+- 长期人设内容：我越来越确定：普通人做AI，不能只学工具，要练判断（来源线索：YouTube Tools That Scale Attention）
 - 4. AI先锋者｜长期信任/人设优先：我越来越确定：普通人做AI，不能只学工具，要练判断
 
 ## 九、本周应该减少的选题

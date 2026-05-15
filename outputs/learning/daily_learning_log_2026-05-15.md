@@ -9,7 +9,7 @@
 - OpenAI News：是；是，入主表 2 条，过滤弱相关 4 条；https://openai.com/news/rss.xml
 - Hugging Face Blog：否；否；https://huggingface.co/blog/feed.xml
 - TechCrunch AI：是；观察，过滤弱相关 6 条；https://techcrunch.com/category/artificial-intelligence/feed/
-- Google AI Blog：是；是，入主表 2 条，过滤弱相关 4 条；https://blog.google/technology/ai/
+- Google AI Blog：否；否；https://blog.google/technology/ai/
 - TechCrunch Startups：是；观察，过滤弱相关 6 条；https://techcrunch.com/category/startups/feed/
 - Social Media Examiner：是；是，入主表 3 条，过滤弱相关 3 条；https://www.socialmediaexaminer.com/feed/
 - Google Trends Daily US：否；否；https://trends.google.com/trending/rss?geo=US
@@ -18,12 +18,12 @@
 ## 三、有效信息源
 
 - OpenAI News：是；是，入主表 2 条，过滤弱相关 4 条；https://openai.com/news/rss.xml
-- Google AI Blog：是；是，入主表 2 条，过滤弱相关 4 条；https://blog.google/technology/ai/
 - Social Media Examiner：是；是，入主表 3 条，过滤弱相关 3 条；https://www.socialmediaexaminer.com/feed/
 
 ## 四、失败信息源
 
-- Hugging Face Blog：fetch failed；https://huggingface.co/blog/feed.xml
+- Hugging Face Blog：This operation was aborted；https://huggingface.co/blog/feed.xml
+- Google AI Blog：This operation was aborted；https://blog.google/technology/ai/
 - Google Trends Daily US：This operation was aborted；https://trends.google.com/trending/rss?geo=US
 - Google AI Blog Hot Material：This operation was aborted；https://blog.google/technology/ai/
 
@@ -37,7 +37,7 @@
 
 - 流量型认知内容：AI智能体不是新工具，而是普通人工作方式的一次换挡，真正提醒普通人的是：AI机会不在工具本身（来源线索：Work with Codex from anywhere）
 - 信任型方法论内容：AI真正值钱的地方，不是炫技，而是把一个人变成一个团队（来源线索：Building a safe, effective sandbox to enable Codex on Windows）
-- 长期人设内容：我越来越确定：普通人做AI，不能只学工具，要练判断（来源线索：Gemini App）
+- 长期人设内容：我越来越确定：普通人做AI，不能只学工具，要练判断（来源线索：YouTube Tools That Scale Attention）
 
 ## 七、进入今天最建议拍的4条的选题
 
@@ -73,7 +73,7 @@
 
 - 流量型认知内容：AI智能体不是新工具，而是普通人工作方式的一次换挡，真正提醒普通人的是：AI机会不在工具本身（来源线索：Work with Codex from anywhere）
 - 信任型方法论内容：AI真正值钱的地方，不是炫技，而是把一个人变成一个团队（来源线索：Building a safe, effective sandbox to enable Codex on Windows）
-- 长期人设内容：我越来越确定：普通人做AI，不能只学工具，要练判断（来源线索：Gemini App）
+- 长期人设内容：我越来越确定：普通人做AI，不能只学工具，要练判断（来源线索：YouTube Tools That Scale Attention）
 - 今日学习重点：继续沉淀高认知、趋势判断、行业误区、个人实战、长期信任和方法论，不把 AI先锋者 带偏成卖货号。
 
 ## 十三、用户人工反馈入口
