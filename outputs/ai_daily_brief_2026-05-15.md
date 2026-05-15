@@ -68,7 +68,7 @@
 - 拍摄形式：露脸口播 / 日更复盘
 - 是否需要提产品：不提产品
 - 这条内容在长期IP建设里的作用：用于建立长期人设资产，为未来高客单咨询、陪跑、课程和合作铺垫。
-- 来源线索：YouTube Tools That Scale Attention
+- 来源线索：Gemini App
 
 ## 三、今天最建议拍的4条
 
@@ -129,6 +129,10 @@
 - OpenAI News｜Work with Codex from anywhere｜相关等级：中相关｜AI先锋者版本角度：改写成认知判断：用「AI智能体不是新工具，而是普通人工作方式的一次换挡」说明普通人要从追工具转向重构自己的工作方式。｜内容目的：流量型认知｜下一步：放入观察
 - OpenAI News｜Building a safe, effective sandbox to enable Codex on Windows｜相关等级：中相关｜AI先锋版本角度：改写成工具落地案例：围绕「把AI工具变成本地工作流」讲一个人如何接进选题、脚本、口播和复盘流程。｜内容目的：信任｜下一步：放入观察
 - OpenAI News｜Building a safe, effective sandbox to enable Codex on Windows｜相关等级：中相关｜AI先锋者版本角度：改写成认知判断：用「把AI工具变成本地工作流」说明普通人要从追工具转向重构自己的工作方式。｜内容目的：长期信任/人设｜下一步：放入观察
+- Google AI Blog｜Gemini App｜相关等级：中相关｜AI先锋版本角度：改写成变现号角度：从用户卡点切入，落到内容生产提效、私信咨询或直播承接。｜内容目的：转化｜下一步：放入观察
+- Google AI Blog｜Gemini App｜相关等级：中相关｜AI先锋者版本角度：改写成认知判断：用「AI工具从聊天走向生产」说明普通人要从追工具转向重构自己的工作方式。｜内容目的：流量型认知｜下一步：放入观察
+- Google AI Blog｜Find out what’s new in the Gemini app in April's Gemini Drop.｜相关等级：中相关｜AI先锋版本角度：改写成工具落地案例：围绕「AI工具从聊天走向生产」讲一个人如何接进选题、脚本、口播和复盘流程。｜内容目的：转化｜下一步：放入观察
+- Google AI Blog｜Find out what’s new in the Gemini app in April's Gemini Drop.｜相关等级：中相关｜AI先锋者版本角度：改写成认知判断：用「AI工具从聊天走向生产」说明普通人要从追工具转向重构自己的工作方式。｜内容目的：流量型认知｜下一步：放入观察
 - Social Media Examiner｜YouTube Tools That Scale Attention｜相关等级：强相关｜AI先锋版本角度：改写成内容增长案例：围绕「内容生产正在系统化」解释如何提高标题、开头和口播产能，并保留私信/教程承接口。｜内容目的：转化｜下一步：拍短视频
 - Social Media Examiner｜YouTube Tools That Scale Attention｜相关等级：强相关｜AI先锋者版本角度：改写成长期方法论：用「内容生产正在系统化」讨论创作者为什么要从灵感驱动转向系统驱动。｜内容目的：长期信任/方法论｜下一步：拍短视频
 - Social Media Examiner｜Claude Code for Everyone: How to Get Started｜相关等级：强相关｜AI先锋版本角度：改写成变现号角度：从用户卡点切入，落到内容生产提效、私信咨询或直播承接。｜内容目的：信任｜下一步：拍短视频
@@ -143,8 +147,8 @@
 ## 六、今日读取失败的信息源
 
 - Hugging Face Blog：This operation was aborted（https://huggingface.co/blog/feed.xml）
-- Google AI Blog：This operation was aborted（https://blog.google/technology/ai/）
 - Google Trends Daily US：This operation was aborted（https://trends.google.com/trending/rss?geo=US）
+- Google AI Blog Hot Material：This operation was aborted（https://blog.google/technology/ai/）
 
 ## 七、明天建议观察什么
 

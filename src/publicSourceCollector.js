@@ -1466,6 +1466,210 @@ ${learningLines(accountPackages.xianfengzhe, learningPackageLine)}
 `;
 }
 
+function isoWeekInfo(dateText) {
+  const date = new Date(`${dateText}T00:00:00Z`);
+  const day = date.getUTCDay() || 7;
+  const thursday = new Date(date);
+  thursday.setUTCDate(date.getUTCDate() + 4 - day);
+  const isoYear = thursday.getUTCFullYear();
+  const yearStart = new Date(Date.UTC(isoYear, 0, 1));
+  const week = Math.ceil((((thursday - yearStart) / 86400000) + 1) / 7);
+  const weekStart = new Date(date);
+  weekStart.setUTCDate(date.getUTCDate() - day + 1);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setUTCDate(weekStart.getUTCDate() + 6);
+  const format = (item) => item.toISOString().slice(0, 10);
+  return {
+    weekId: `${isoYear}-W${String(week).padStart(2, "0")}`,
+    startDate: format(weekStart),
+    endDate: format(weekEnd)
+  };
+}
+
+function extractMarkdownSection(text, heading) {
+  const lines = text.split(/\r?\n/);
+  const start = lines.findIndex((line) => line.trim() === `## ${heading}`);
+  if (start === -1) return "";
+  const collected = [];
+  for (let index = start + 1; index < lines.length; index += 1) {
+    if (lines[index].startsWith("## ")) break;
+    collected.push(lines[index]);
+  }
+  return collected.join("\n").trim();
+}
+
+function sectionBulletLines(logs, heading) {
+  return logs.flatMap((log) =>
+    extractMarkdownSection(log.content, heading)
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith("- ") && line !== "- 暂无")
+  );
+}
+
+function cleanBullet(line) {
+  return line.replace(/^- /, "").trim();
+}
+
+function summarizeBullets(lines, fallback) {
+  const seen = new Set();
+  const unique = [];
+  for (const line of lines.map(cleanBullet).filter(Boolean)) {
+    if (seen.has(line)) continue;
+    seen.add(line);
+    unique.push(line);
+  }
+  if (!unique.length) return `- ${fallback}`;
+  return unique.slice(0, 10).map((line) => `- ${line}`).join("\n");
+}
+
+function summarizeSourceQuality(logs) {
+  const sources = sectionBulletLines(logs, "三、有效信息源");
+  const sourceMap = new Map();
+  for (const line of sources) {
+    const clean = cleanBullet(line);
+    const [name, detail = ""] = clean.split("：");
+    const key = name || clean;
+    const current = sourceMap.get(key) || { count: 0, detail };
+    current.count += 1;
+    current.detail = detail || current.detail;
+    sourceMap.set(key, current);
+  }
+  const ranked = [...sourceMap.entries()].sort((a, b) => b[1].count - a[1].count || a[0].localeCompare(b[0]));
+  if (!ranked.length) return "- 暂无稳定有效来源，需继续观察公开信息源质量。";
+  return ranked
+    .slice(0, 10)
+    .map(([name, item]) => `- ${name}：本周有效 ${item.count} 天；${item.detail || "有可用素材"}`)
+    .join("\n");
+}
+
+function weeklyDirectionLines(logs) {
+  return sectionBulletLines(logs, "七、进入今天最建议拍的4条的选题");
+}
+
+async function readWeeklyDailyLogs(learningDir, weekInfo) {
+  let fileNames = [];
+  try {
+    fileNames = await fs.readdir(learningDir);
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+
+  const matched = fileNames
+    .map((fileName) => {
+      const match = fileName.match(/^daily_learning_log_(\d{4}-\d{2}-\d{2})\.md$/);
+      if (!match) return null;
+      return { fileName, dateText: match[1], weekId: isoWeekInfo(match[1]).weekId };
+    })
+    .filter((item) => item && item.weekId === weekInfo.weekId)
+    .sort((a, b) => a.dateText.localeCompare(b.dateText));
+
+  return Promise.all(matched.map(async (item) => ({
+    ...item,
+    content: await fs.readFile(path.join(learningDir, item.fileName), "utf8")
+  })));
+}
+
+function buildWeeklyReviewContent(weekInfo, logs) {
+  const sampleNote = logs.length < 7 ? "- 当前周样本较少，结论仅作为阶段性参考。" : "- 当前周已有完整或接近完整的每日学习记录，可作为周策略参考。";
+  const logList = logs.length
+    ? logs.map((log) => `- ${log.fileName}`).join("\n")
+    : "- 暂无可用每日学习记录";
+  const directions = weeklyDirectionLines(logs);
+  const xianfengPackageLines = sectionBulletLines(logs, "五、进入 AI先锋 内容包的选题");
+  const xianfengzhePackageLines = sectionBulletLines(logs, "六、进入 AI先锋者 内容包的选题");
+  const xianfengTraffic = [
+    ...xianfengPackageLines.filter((line) => /流量内容/.test(line)),
+    ...directions.filter((line) => /AI先锋｜流量/.test(line))
+  ];
+  const xianfengConversion = [
+    ...xianfengPackageLines.filter((line) => /转化内容/.test(line)),
+    ...directions.filter((line) => /AI先锋｜转化/.test(line))
+  ];
+  const xianfengzheCognition = [
+    ...xianfengzhePackageLines.filter((line) => /流量型认知内容/.test(line)),
+    ...directions.filter((line) => /AI先锋者｜流量型认知/.test(line))
+  ];
+  const xianfengzheTrust = [
+    ...xianfengzhePackageLines.filter((line) => /长期人设内容/.test(line)),
+    ...directions.filter((line) => /AI先锋者｜长期信任/.test(line))
+  ];
+  const abandoned = sectionBulletLines(logs, "八、被放弃的选题");
+  const reduceLines = abandoned.length
+    ? summarizeBullets(abandoned, "暂无明确减少项")
+    : "- 暂无明确减少项；继续减少弱相关、风险不明、过度卖货和偏离双账号定位的选题。";
+
+  return `# 每周复盘 weekly_review ${weekInfo.weekId}
+
+## 一、本周周期
+
+- 周期：${weekInfo.weekId}（${weekInfo.startDate} 至 ${weekInfo.endDate}）
+${sampleNote}
+
+## 二、本周可用每日学习记录
+
+${logList}
+
+## 三、本周质量最高的信息源
+
+${summarizeSourceQuality(logs)}
+
+## 四、本周反复出现的内容方向
+
+${summarizeBullets(directions, "暂无足够样本判断反复出现的方向，先继续累积每日学习记录。")}
+
+## 五、AI先锋 本周更适合流量的方向
+
+${summarizeBullets(xianfengTraffic, "暂无足够样本判断 AI先锋 的流量方向，先继续观察内容生产、短视频运营和自媒体提效线索。")}
+
+## 六、AI先锋 本周更适合转化的方向
+
+${summarizeBullets(xianfengConversion, "暂无足够样本判断 AI先锋 的转化方向，先继续观察私信、直播、教程、案例和 799 元 AI口播智能体承接线索。")}
+
+## 七、AI先锋者 本周更适合认知的方向
+
+${summarizeBullets(xianfengzheCognition, "暂无足够样本判断 AI先锋者 的认知方向，先继续观察 AI趋势、机会判断和行业误区拆解线索。")}
+
+## 八、AI先锋者 本周更适合长期信任的方向
+
+${summarizeBullets(xianfengzheTrust, "暂无足够样本判断 AI先锋者 的长期信任方向，先继续沉淀个人实战、方法论和长期人设线索。")}
+
+## 九、本周应该减少的选题
+
+${reduceLines}
+
+## 十、下周内容策略建议
+
+- AI先锋：分别保留流量、信任、转化内容，不只追热点，重点观察能连接私信、直播、教程、案例和 799 元 AI口播智能体承接的素材。
+- AI先锋者：分别保留高认知、趋势判断、行业误区、个人实战、长期信任和方法论沉淀内容，不把 IP 号写成卖货号。
+- 双账号策略建议要分别输出，不能用 AI先锋 的变现逻辑覆盖 AI先锋者 的 IP 逻辑。
+
+## 十一、样本限制和人工复核提醒
+
+${sampleNote}
+- 周复盘只汇总已有 daily_learning_log，不替代人工判断。
+- 用户发布后的播放、点赞、评论、收藏、私信、直播转化、成交和主观判断仍需要人工补充。
+- 样本不足时，不把单日异常表现当成长期规律。
+
+## 十二、双账号边界提醒
+
+- AI先锋 学习重点是流量、信任、转化、私信、直播、799 元 AI口播智能体承接。
+- AI先锋者 学习重点是高认知、趋势判断、行业误区、个人实战、长期信任、方法论沉淀。
+- AI先锋者 不能被周复盘机制带偏成卖货号。
+- 不能让所有周复盘结论都导向 799 产品。
+- AI先锋 和 AI先锋者 的策略建议必须分别输出。
+`;
+}
+
+async function buildWeeklyReview(dateText, learningDir) {
+  const weekInfo = isoWeekInfo(dateText);
+  const logs = await readWeeklyDailyLogs(learningDir, weekInfo);
+  return {
+    weekId: weekInfo.weekId,
+    content: buildWeeklyReviewContent(weekInfo, logs)
+  };
+}
+
 async function checkWritable(filePath) {
   try {
     const handle = await fs.open(filePath, "r+");
@@ -1561,6 +1765,8 @@ async function collectDailyPublicSources(options = {}) {
   const briefPath = path.join(outputDir, `ai_daily_brief_${dateText}.md`);
   const learningDir = path.join(outputDir, "learning");
   const learningLogPath = path.join(learningDir, `daily_learning_log_${dateText}.md`);
+  const weekInfo = isoWeekInfo(dateText);
+  const weeklyReviewPath = path.join(learningDir, `weekly_review_${weekInfo.weekId}.md`);
 
   const writtenAiNews = await writeCsv(aiNewsPath, AI_NEWS_HEADERS, aiResult.rows);
   const writtenHotMaterials = await writeCsv(hotMaterialsPath, HOT_MATERIAL_HEADERS, hotResult.rows);
@@ -1578,6 +1784,8 @@ async function collectDailyPublicSources(options = {}) {
   await fs.writeFile(briefPath, brief, "utf8");
   await fs.mkdir(learningDir, { recursive: true });
   await fs.writeFile(learningLogPath, learningLog, "utf8");
+  const weeklyReview = await buildWeeklyReview(dateText, learningDir);
+  await fs.writeFile(weeklyReviewPath, weeklyReview.content, "utf8");
 
   return {
     date: dateText,
@@ -1586,13 +1794,15 @@ async function collectDailyPublicSources(options = {}) {
     sourceHealthPath: writtenSourceHealth.writtenPath,
     briefPath,
     learningLogPath,
+    weeklyReviewPath,
     aiRows: aiResult.rows,
     hotRows: hotResult.rows,
     sourceHealthRows,
     failures,
     fileWriteWarnings,
     brief,
-    learningLog
+    learningLog,
+    weeklyReview: weeklyReview.content
   };
 }
 
