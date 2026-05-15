@@ -1337,6 +1337,135 @@ ${listLines(failureRows, (item) => `- ${item["来源名称"]}：${item["失败�
 `;
 }
 
+function learningLines(items, formatter) {
+  if (!items.length) return "- 暂无";
+  return items.map(formatter).join("\n");
+}
+
+function learningSourceLine(row) {
+  const name = row["来源名称"] || "未命名来源";
+  const link = row["来源链接"] || "无链接";
+  const status = row["是否读取成功"] || "待判断";
+  const keep = row["是否建议保留"] || "待判断";
+  return `- ${name}：${status}；${keep}；${link}`;
+}
+
+function learningFailureLine(row) {
+  const name = row["来源名称"] || "未命名来源";
+  const reason = row["失败原因"] || "未记录失败原因";
+  const link = row["来源链接"] || "无链接";
+  return `- ${name}：${reason}；${link}`;
+}
+
+function learningItemTitle(item) {
+  return item.title || briefTitle(item) || rawTitle(item) || "未命名选题";
+}
+
+function learningPackageLine([label, item]) {
+  return `- ${label}：${learningItemTitle(item)}（来源线索：${item.source || "公开信息源候选"}）`;
+}
+
+function learningDecisionLine(decision, index) {
+  const item = decision.item || fallbackRow(`${decision.account}${decision.purpose}候选不足`);
+  return `- ${index + 1}. ${decision.account}｜${decision.purpose}：${learningItemTitle(item)}`;
+}
+
+function abandonedReason(row) {
+  return row["不建议做的原因"]
+    || row["风险备注"]
+    || row["不适合承接原因"]
+    || row["失败原因"]
+    || "未进入推荐区，需人工复核相关性、风险或账号适配度";
+}
+
+function abandonedTopicLine(row) {
+  const action = row["下一步动作"] || "未记录动作";
+  return `- ${briefTitle(row) || rawTitle(row)}：${action}；${abandonedReason(row)}`;
+}
+
+function buildDailyLearningLog(dateText, aiRows, hotRows, sourceHealthRows) {
+  const allRows = [...aiRows, ...hotRows];
+  const actionableRows = [...aiRows.filter(isActionable), ...hotRows.filter(isActionable)];
+  const accountPackages = buildAccountPackages(actionableRows);
+  const shootingDecisions = buildShootingDecisions(accountPackages);
+  const collectedSources = sourceHealthRows;
+  const effectiveSources = sourceHealthRows.filter((row) =>
+    row["是否读取成功"] === "是" && /^是/.test(row["是否建议保留"] || "")
+  );
+  const failedSources = sourceHealthRows.filter((row) => row["是否读取成功"] === "否");
+  const abandonedRows = uniqueBriefRows(allRows.filter((row) => !isActionable(row)));
+
+  return `# 每日学习记录 daily_learning_log ${dateText}
+
+## 一、日期
+
+${dateText}
+
+## 二、今日采集信息源
+
+${learningLines(collectedSources, learningSourceLine)}
+
+## 三、有效信息源
+
+${learningLines(effectiveSources, learningSourceLine)}
+
+## 四、失败信息源
+
+${learningLines(failedSources, learningFailureLine)}
+
+## 五、进入 AI先锋 内容包的选题
+
+${learningLines(accountPackages.xianfeng, learningPackageLine)}
+
+## 六、进入 AI先锋者 内容包的选题
+
+${learningLines(accountPackages.xianfengzhe, learningPackageLine)}
+
+## 七、进入今天最建议拍的4条的选题
+
+${learningLines(shootingDecisions, learningDecisionLine)}
+
+## 八、被放弃的选题
+
+${learningLines(abandonedRows, abandonedTopicLine)}
+
+## 九、放弃原因
+
+${learningLines(abandonedRows, (row) => `- ${briefTitle(row) || rawTitle(row)}：${abandonedReason(row)}`)}
+
+## 十、今日推荐判断依据
+
+- 优先使用已成功读取、且进入主表的公开信息源。
+- 优先选择与 AI内容生产、AI提效、自媒体运营、知识付费、个体创业者提效、私信转化或直播承接强相关的素材。
+- AI先锋 优先判断是否能形成流量、信任、转化、私信、直播或 799 元 AI口播智能体承接。
+- AI先锋者 优先判断是否能形成高认知、趋势判断、行业误区拆解、个人实战记录、长期信任或方法论沉淀。
+- 不确定真实性、时效性、风险边界或账号适配度的选题，不进入优先拍摄建议。
+
+## 十一、AI先锋 今日学习到什么
+
+${learningLines(accountPackages.xianfeng, learningPackageLine)}
+- 今日学习重点：继续把热点素材转成流量、信任、转化、私信、直播和 799 元 AI口播智能体承接的可执行内容，但不把弱相关素材硬接产品。
+
+## 十二、AI先锋者 今日学习到什么
+
+${learningLines(accountPackages.xianfengzhe, learningPackageLine)}
+- 今日学习重点：继续沉淀高认知、趋势判断、行业误区、个人实战、长期信任和方法论，不把 AI先锋者 带偏成卖货号。
+
+## 十三、用户人工反馈入口
+
+| 哪条内容发了 | 播放量 | 点赞 | 评论 | 收藏 | 私信数 | 直播转化情况 | 成交情况 | 用户主观判断：有效 / 一般 / 不适合 | 备注 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 待补充 | 待补充 | 待补充 | 待补充 | 待补充 | 待补充 | 待补充 | 待补充 | 待补充 | 待补充 |
+
+## 十四、双账号学习边界
+
+- AI先锋 学习重点是流量、信任、转化、私信、直播、799 元 AI口播智能体承接。
+- AI先锋者 学习重点是高认知、趋势判断、行业误区、个人实战、长期信任、方法论沉淀。
+- AI先锋者 不能被学习机制带偏成卖货号。
+- 不能让所有学习结论都导向 799 产品。
+`;
+}
+
 async function checkWritable(filePath) {
   try {
     const handle = await fs.open(filePath, "r+");
@@ -1430,6 +1559,8 @@ async function collectDailyPublicSources(options = {}) {
   const hotMaterialsPath = path.join(dailyDir, `hot_materials_${dateText}.csv`);
   const sourceHealthPath = path.join(dailyDir, `source_health_${dateText}.csv`);
   const briefPath = path.join(outputDir, `ai_daily_brief_${dateText}.md`);
+  const learningDir = path.join(outputDir, "learning");
+  const learningLogPath = path.join(learningDir, `daily_learning_log_${dateText}.md`);
 
   const writtenAiNews = await writeCsv(aiNewsPath, AI_NEWS_HEADERS, aiResult.rows);
   const writtenHotMaterials = await writeCsv(hotMaterialsPath, HOT_MATERIAL_HEADERS, hotResult.rows);
@@ -1442,8 +1573,11 @@ async function collectDailyPublicSources(options = {}) {
       reason: item.reason
     }));
   const brief = buildDailyBrief(dateText, aiResult.rows, hotResult.rows, failures, fileWriteWarnings);
+  const learningLog = buildDailyLearningLog(dateText, aiResult.rows, hotResult.rows, sourceHealthRows);
   await fs.mkdir(outputDir, { recursive: true });
   await fs.writeFile(briefPath, brief, "utf8");
+  await fs.mkdir(learningDir, { recursive: true });
+  await fs.writeFile(learningLogPath, learningLog, "utf8");
 
   return {
     date: dateText,
@@ -1451,12 +1585,14 @@ async function collectDailyPublicSources(options = {}) {
     hotMaterialsPath: writtenHotMaterials.writtenPath,
     sourceHealthPath: writtenSourceHealth.writtenPath,
     briefPath,
+    learningLogPath,
     aiRows: aiResult.rows,
     hotRows: hotResult.rows,
     sourceHealthRows,
     failures,
     fileWriteWarnings,
-    brief
+    brief,
+    learningLog
   };
 }
 
