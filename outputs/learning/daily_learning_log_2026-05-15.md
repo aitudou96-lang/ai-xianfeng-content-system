@@ -23,7 +23,7 @@
 
 ## 四、失败信息源
 
-- Hugging Face Blog：This operation was aborted；https://huggingface.co/blog/feed.xml
+- Hugging Face Blog：fetch failed；https://huggingface.co/blog/feed.xml
 - Google Trends Daily US：This operation was aborted；https://trends.google.com/trending/rss?geo=US
 - Google AI Blog Hot Material：This operation was aborted；https://blog.google/technology/ai/
 

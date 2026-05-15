@@ -1670,6 +1670,158 @@ async function buildWeeklyReview(dateText, learningDir) {
   };
 }
 
+function monthInfo(dateText) {
+  const monthId = dateText.slice(0, 7);
+  const [year, month] = monthId.split("-").map(Number);
+  const startDate = `${monthId}-01`;
+  const endDate = new Date(Date.UTC(year, month, 0)).toISOString().slice(0, 10);
+  return { monthId, startDate, endDate };
+}
+
+async function readMonthlyDailyLogs(learningDir, info) {
+  let fileNames = [];
+  try {
+    fileNames = await fs.readdir(learningDir);
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+
+  const matched = fileNames
+    .map((fileName) => {
+      const match = fileName.match(/^daily_learning_log_(\d{4}-\d{2}-\d{2})\.md$/);
+      if (!match || !match[1].startsWith(info.monthId)) return null;
+      return { fileName, dateText: match[1] };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.dateText.localeCompare(b.dateText));
+
+  return Promise.all(matched.map(async (item) => ({
+    ...item,
+    content: await fs.readFile(path.join(learningDir, item.fileName), "utf8")
+  })));
+}
+
+async function readMonthlyWeeklyReviews(learningDir, info) {
+  let fileNames = [];
+  try {
+    fileNames = await fs.readdir(learningDir);
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+
+  const weeklyFiles = fileNames
+    .filter((fileName) => /^weekly_review_\d{4}-W\d{2}\.md$/.test(fileName))
+    .sort();
+  const reviews = [];
+  for (const fileName of weeklyFiles) {
+    const content = await fs.readFile(path.join(learningDir, fileName), "utf8");
+    if (content.includes(`${info.monthId}-`)) {
+      reviews.push({ fileName, content });
+    }
+  }
+  return reviews;
+}
+
+function buildMonthlyMethodologyUpgradeContent(info, dailyLogs, weeklyReviews) {
+  const materialCount = dailyLogs.length + weeklyReviews.length;
+  const sampleNote = materialCount < 6 ? "- 当前月样本较少，结论仅作为阶段性参考。" : "- 当前月学习材料已具备一定参考价值，但仍需结合真实账号数据复核。";
+  const materialList = [
+    ...dailyLogs.map((log) => `- ${log.fileName}`),
+    ...weeklyReviews.map((review) => `- ${review.fileName}`)
+  ].join("\n") || "- 暂无可用学习材料";
+  const materialSummary = `已读取 ${dailyLogs.length} 份每日学习记录、${weeklyReviews.length} 份每周复盘。`;
+  const reduceTopics = sectionBulletLines(weeklyReviews, "九、本周应该减少的选题");
+
+  return `# 月度方法论升级 monthly_methodology_upgrade ${info.monthId}
+
+## 一、本月周期
+
+- 月份：${info.monthId}（${info.startDate} 至 ${info.endDate}）
+${sampleNote}
+
+## 二、本月可用学习材料
+
+${materialList}
+
+## 三、本月 AI 行业变化
+
+- AI工具正在从单点工具走向工作流和智能体，内容生产不再只是“知道一个新工具”，而是能不能把工具接进稳定流程。
+- 普通人机会不在追逐工具资讯，而在把 AI 接入选题、脚本、口播、发布和复盘流程。
+- AI内容生产的核心竞争正在从灵感驱动变成系统化产能，谁能稳定生产、验证和复盘，谁更容易积累内容资产。
+- 样本依据：${materialSummary}当前结论来自少量学习材料，后续需要用更多周复盘和真实账号数据修正。
+
+## 四、本月内容平台风向变化
+
+- 内容平台更需要可展示、可复用、可验证的实操流程，单纯复述 AI 资讯不适合作为主线。
+- 口播内容不能只讲“发生了什么”，要落到案例、教程、流程和结果，用户才有理由评论、私信或继续关注。
+- AI内容适合使用“观点判断 + 录屏演示 + 私信/直播承接”的组合，让观点有证据，让承接不突兀。
+- 平台风向判断暂时只作为阶段性参考，后续需要叠加播放、评论、收藏、私信和直播转化数据。
+
+## 五、AI先锋 变现内容方法论升级
+
+- 流量内容负责制造精准注意力，优先围绕内容产能、口播效率、短视频流程和自媒体提效切入。
+- 信任内容负责证明方法有效，要多用案例、录屏、流程拆解和前后对比，避免只停留在观点。
+- 转化内容负责自然接到私信、直播、教程和 799 元 AI口播智能体，承接前必须先把用户痛点讲清楚。
+- 不要所有内容都直接卖产品；AI先锋 需要保留流量、信任、转化三类内容的比例。
+
+## 六、AI先锋者 IP 内容方法论升级
+
+- AI先锋者 先建立趋势判断和认知标签，重点回答“普通人为什么要关注这个变化”。
+- 内容重点是高认知、误区拆解、个人实战和长期信任，不追求每条都转化。
+- 默认不强提 799 产品，只有在非常自然时才间接提到自己的实战系统或服务能力。
+- AI先锋者 不能被月度复盘带偏成卖货号，它承担的是 IP 信任、认知标签和未来高客单价承接。
+
+## 七、本月产品承接机会
+
+- AI先锋 的自然承接场景：用户卡在选题、脚本、口播、录屏演示、内容产能、私信咨询和直播间讲解时，可以承接 799 元 AI口播智能体。
+- 最适合承接的内容形态是教程演示、案例拆解、流程复盘和结果对比，而不是泛泛讲 AI 新闻。
+- AI先锋者 不默认承接 799 产品；它更适合沉淀长期信任、认知标签和未来高客单价咨询、陪跑、课程或合作机会。
+- 产品承接必须服务用户问题，不能让所有月度结论都导向 799 产品。
+
+## 八、下月重点观察趋势
+
+- AI工作流和智能体是否继续影响内容生产，尤其是选题、脚本、口播、录屏和复盘流程。
+- 自媒体人是否更关注“产能提升”而不是“工具资讯”，以及哪些表达能引出真实咨询。
+- 哪些素材能同时支持 AI先锋 的转化和 AI先锋者 的认知，但在表达上必须拆成两个账号版本。
+- 哪些内容能带来私信、直播和咨询线索，并能被用户反馈证明不是空泛流量。
+
+## 九、需要沉淀进长期标准的方法论
+
+- AI先锋：长期标准必须拆成流量、信任、转化三类；流量看精准注意力，信任看方法有效性，转化看私信、直播、教程和 799 元 AI口播智能体承接。
+- AI先锋：每条转化内容都要写清楚用户痛点、演示方式、承接方式和不适合承接的边界。
+- AI先锋者：长期标准必须拆成高认知、趋势判断、行业误区、个人实战、长期信任和方法论沉淀，不把 IP 号做成卖货号。
+- AI先锋者：默认不强提产品，优先沉淀观点可信度、判断能力和真实实践感。
+${summarizeBullets(reduceTopics, "继续减少弱相关、风险不明、过度卖货和偏离双账号定位的选题。")}
+
+## 十、样本限制和人工复核提醒
+
+${sampleNote}
+- 月度方法论升级只汇总已有 daily_learning_log 和 weekly_review，不替代人工判断。
+- 用户发布后的播放、点赞、评论、收藏、私信、直播转化、成交和主观判断仍需要人工补充。
+- 样本不足时，不把单日或单周异常表现当成月度规律。
+
+## 十一、双账号边界提醒
+
+- AI先锋 学习重点是流量、信任、转化、私信、直播、799 元 AI口播智能体承接。
+- AI先锋者 学习重点是高认知、趋势判断、行业误区、个人实战、长期信任、方法论沉淀。
+- AI先锋者 不能被月度方法论升级机制带偏成卖货号。
+- 不能让所有月度方法论升级结论都导向 799 产品。
+- AI先锋 和 AI先锋者 的方法论升级必须分别输出。
+`;
+}
+
+async function buildMonthlyMethodologyUpgrade(dateText, learningDir) {
+  const info = monthInfo(dateText);
+  const [dailyLogs, weeklyReviews] = await Promise.all([
+    readMonthlyDailyLogs(learningDir, info),
+    readMonthlyWeeklyReviews(learningDir, info)
+  ]);
+  return {
+    monthId: info.monthId,
+    content: buildMonthlyMethodologyUpgradeContent(info, dailyLogs, weeklyReviews)
+  };
+}
+
 async function checkWritable(filePath) {
   try {
     const handle = await fs.open(filePath, "r+");
@@ -1767,6 +1919,8 @@ async function collectDailyPublicSources(options = {}) {
   const learningLogPath = path.join(learningDir, `daily_learning_log_${dateText}.md`);
   const weekInfo = isoWeekInfo(dateText);
   const weeklyReviewPath = path.join(learningDir, `weekly_review_${weekInfo.weekId}.md`);
+  const currentMonthInfo = monthInfo(dateText);
+  const monthlyMethodologyUpgradePath = path.join(learningDir, `monthly_methodology_upgrade_${currentMonthInfo.monthId}.md`);
 
   const writtenAiNews = await writeCsv(aiNewsPath, AI_NEWS_HEADERS, aiResult.rows);
   const writtenHotMaterials = await writeCsv(hotMaterialsPath, HOT_MATERIAL_HEADERS, hotResult.rows);
@@ -1786,6 +1940,8 @@ async function collectDailyPublicSources(options = {}) {
   await fs.writeFile(learningLogPath, learningLog, "utf8");
   const weeklyReview = await buildWeeklyReview(dateText, learningDir);
   await fs.writeFile(weeklyReviewPath, weeklyReview.content, "utf8");
+  const monthlyMethodologyUpgrade = await buildMonthlyMethodologyUpgrade(dateText, learningDir);
+  await fs.writeFile(monthlyMethodologyUpgradePath, monthlyMethodologyUpgrade.content, "utf8");
 
   return {
     date: dateText,
@@ -1795,6 +1951,7 @@ async function collectDailyPublicSources(options = {}) {
     briefPath,
     learningLogPath,
     weeklyReviewPath,
+    monthlyMethodologyUpgradePath,
     aiRows: aiResult.rows,
     hotRows: hotResult.rows,
     sourceHealthRows,
@@ -1802,7 +1959,8 @@ async function collectDailyPublicSources(options = {}) {
     fileWriteWarnings,
     brief,
     learningLog,
-    weeklyReview: weeklyReview.content
+    weeklyReview: weeklyReview.content,
+    monthlyMethodologyUpgrade: monthlyMethodologyUpgrade.content
   };
 }
 
